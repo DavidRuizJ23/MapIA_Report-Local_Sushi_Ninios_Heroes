@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evaluación de Viabilidad para la apertura de Local de Sushi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #0b1120; color: #f1f5f9; }
+    .glass-panel { background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .tab-btn {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tab-btn:hover:not(.active) {
+      background: rgba(30, 41, 59, 0.8);
+      border-color: rgba(148, 163, 184, 0.3);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+    .tab-btn.active {
+      background: rgba(56, 189, 248, 0.16);
+      border-color: #38bdf8;
+      color: #38bdf8;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.18);
+    }
+    .traffic-green { background: radial-gradient(circle, #22c55e 0%, #15803d 100%); box-shadow: 0 0 16px rgba(34, 197, 94, 0.5); }
+    .chart-container { position: relative; width: 100%; height: 260px; }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex flex-col justify-between">
+
+  <div class="max-w-6xl mx-auto w-full">
+
+    <!-- Encabezado Principal -->
+    <header class="mb-6 pb-4 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20">
+            <i class="fa-solid fa-map-pin mr-1.5"></i> AGEB 0901500010834
+          </span>
+          <span class="text-sm text-slate-400">Cuauhtémoc, CDMX · Zona Ciudad Judicial / Niños Héroes</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Evaluación de Viabilidad para la apertura de Local de Sushi</h1>
+        <p class="text-sm md:text-base text-slate-300 mt-1">Concepto: <strong class="text-white">Sushi Express / Bowls de Conveniencia</strong> · Fuentes: <span class="text-slate-300">ENIGH 2024 · DENUE · Censo 2020</span></p>
+      </div>
+      <button onclick="window.print()" class="self-start md:self-auto px-4 py-2.5 text-xs font-semibold rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all flex items-center gap-2">
+        <i class="fa-solid fa-print text-sky-400"></i> Imprimir / PDF
+      </button>
+    </header>
+
+    <!-- Sección de Pestañas con Titular Solicitado -->
+    <div class="mb-6">
+      <div class="flex items-center gap-2 mb-3">
+        <i class="fa-solid fa-layer-group text-sky-400 text-sm"></i>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300">Detalle Informativo de los Segmentos Evaluados</h2>
+      </div>
+
+      <nav class="space-y-3">
+        <!-- Fila 1 -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <button onclick="switchTab('resumen')" id="btn-resumen" class="tab-btn active px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/70 text-slate-300 flex items-center justify-center gap-2 text-sm font-semibold">
+            <i class="fa-solid fa-gauge-high text-sky-400"></i>
+            <span>Resumen Ejecutivo</span>
+          </button>
+
+          <button onclick="switchTab('m1')" id="btn-m1" class="tab-btn px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/70 text-slate-300 flex items-center justify-center gap-2 text-sm font-semibold">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span>1. Diagnóstico & Clúster</span>
+          </button>
+
+          <button onclick="switchTab('m2')" id="btn-m2" class="tab-btn px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/70 text-slate-300 flex items-center justify-center gap-2 text-sm font-semibold">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span>2. Sociodemográfico</span>
+          </button>
+
+          <button onclick="switchTab('m3')" id="btn-m3" class="tab-btn px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/70 text-slate-300 flex items-center justify-center gap-2 text-sm font-semibold">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+            <span>3. Dinámica & Flujo</span>
+          </button>
+        </div>
+
+        <!-- Fila 2 (Con 'Punto de Equilibrio' en español) -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <button onclick="switchTab('m4')" id="btn-m4" class="tab-btn px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/70 text-slate-300 flex items-center justify-center gap-2 text-sm font-semibold">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span>4. Oferta & Competencia</span>
+          </button>
+
+          <button onclick="switchTab('m5')" id="btn-m5" class="tab-btn px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/70 text-slate-300 flex items-center justify-center gap-2 text-sm font-semibold">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span>5. Finanzas & Punto de Equilibrio</span>
+          </button>
+
+          <button onclick="switchTab('m6')" id="btn-m6" class="tab-btn px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/70 text-slate-300 flex items-center justify-center gap-2 text-sm font-semibold">
+            <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+            <span>6. Plan Táctico & Riesgos</span>
+          </button>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Banner Horizontal: Probabilidad de Crecimiento & Semáforo -->
+    <div class="glass-panel p-4 md:p-5 rounded-2xl mb-6 border border-emerald-500/25 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 rounded-full traffic-green flex items-center justify-center text-slate-950 font-black text-base shrink-0 animate-pulse">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs uppercase tracking-wider font-bold text-slate-400">Probabilidad de Crecimiento del Negocio</span>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Viable</span>
+          </div>
+          <div class="text-sm md:text-base text-slate-200 mt-0.5">
+            Semáforo Verde: <strong class="text-emerald-400 font-semibold">Factibilidad favorable</strong> para continuar con el proceso de apertura.
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-baseline md:justify-end gap-2 border-t md:border-t-0 md:border-l border-slate-800 pt-3 md:pt-0 md:pl-6 shrink-0">
+        <span class="text-3xl md:text-4xl font-black text-emerald-400">84%</span>
+        <span class="text-sm md:text-base font-semibold text-slate-300">· Alta Expansión</span>
+      </div>
+    </div>
+
+    <!-- Contenedor Principal de Pestañas -->
+    <div class="glass-panel p-6 md:p-8 rounded-3xl min-h-[500px]">
+
+      <!-- TAB: RESUMEN EJECUTIVO -->
+      <section id="tab-resumen" class="space-y-6">
+        <div class="p-6 rounded-2xl bg-gradient-to-r from-emerald-950/60 via-slate-900 to-slate-900 border border-emerald-500/40">
+          <div class="flex items-center gap-2 text-emerald-400 text-sm font-bold uppercase tracking-wider mb-2">
+            <i class="fa-solid fa-circle-check"></i> Dictamen de Negocio
+          </div>
+          <h2 class="text-xl md:text-2xl font-bold text-white leading-snug">
+            ¿Por qué es viable esta ubicación?
+          </h2>
+          <p class="text-slate-300 text-sm md:text-base mt-3 leading-relaxed">
+            <strong class="text-emerald-400 font-semibold">El punto presenta condiciones óptimas para un formato de servicio rápido:</strong> existe una concentración laboral de más de 4,000 trabajadores en juzgados y despachos con un poder adquisitivo medio-alto. La oferta actual muestra una sobre indexación en comida corrida tradicional y un déficit claro en opciones frescas, balanceadas y de preparación ágil para consumir en horarios de oficina.
+          </p>
+        </div>
+
+        <!-- Racional con las 6 Etiquetas -->
+        <div>
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-3">
+            Racional de la Probabilidad Final (Evaluación por Dimensión Estratégica)
+          </h3>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div class="p-4 bg-slate-900/70 border border-emerald-500/30 rounded-xl flex flex-col justify-between">
+              <div>
+                <span class="text-xs text-slate-400 uppercase font-semibold block">1. Clúster</span>
+                <span class="text-base font-bold text-emerald-400 mt-1 block">90 / 100</span>
+              </div>
+              <span class="text-xs text-slate-300 mt-2 font-medium bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 text-center">Favorable</span>
+            </div>
+            <div class="p-4 bg-slate-900/70 border border-emerald-500/30 rounded-xl flex flex-col justify-between">
+              <div>
+                <span class="text-xs text-slate-400 uppercase font-semibold block">2. Capacidad Gasto</span>
+                <span class="text-base font-bold text-emerald-400 mt-1 block">85 / 100</span>
+              </div>
+              <span class="text-xs text-slate-300 mt-2 font-medium bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 text-center">Ticket Soportado</span>
+            </div>
+            <div class="p-4 bg-slate-900/70 border border-amber-500/30 rounded-xl flex flex-col justify-between">
+              <div>
+                <span class="text-xs text-slate-400 uppercase font-semibold block">3. Dinámica Flujo</span>
+                <span class="text-base font-bold text-amber-400 mt-1 block">72 / 100</span>
+              </div>
+              <span class="text-xs text-slate-300 mt-2 font-medium bg-amber-500/10 px-2 py-1 rounded border border-amber-500/20 text-center">Alta Dependencia</span>
+            </div>
+            <div class="p-4 bg-slate-900/70 border border-emerald-500/30 rounded-xl flex flex-col justify-between">
+              <div>
+                <span class="text-xs text-slate-400 uppercase font-semibold block">4. Competencia</span>
+                <span class="text-base font-bold text-emerald-400 mt-1 block">88 / 100</span>
+              </div>
+              <span class="text-xs text-slate-300 mt-2 font-medium bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 text-center">Baja Saturación</span>
+            </div>
+            <div class="p-4 bg-slate-900/70 border border-emerald-500/30 rounded-xl flex flex-col justify-between">
+              <div>
+                <span class="text-xs text-slate-400 uppercase font-semibold block">5. Finanzas</span>
+                <span class="text-base font-bold text-emerald-400 mt-1 block">86 / 100</span>
+              </div>
+              <span class="text-xs text-slate-300 mt-2 font-medium bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 text-center">Punto Ágil</span>
+            </div>
+            <div class="p-4 bg-slate-900/70 border border-sky-500/30 rounded-xl flex flex-col justify-between">
+              <div>
+                <span class="text-xs text-slate-400 uppercase font-semibold block">6. Plan Táctico</span>
+                <span class="text-base font-bold text-sky-400 mt-1 block">84 / 100</span>
+              </div>
+              <span class="text-xs text-slate-300 mt-2 font-medium bg-sky-500/10 px-2 py-1 rounded border border-sky-500/20 text-center">Riesgo Controlable</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráfico del Radar Resumen -->
+        <div class="p-5 rounded-2xl bg-slate-900/50 border border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Balance del Perfil de Ubicación (Radar Estratégico)</span>
+            <span class="text-xs text-sky-400">Puntaje Global Ponderado: 84 pts</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-resumen"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: 1. DIAGNÓSTICO GENERAL Y ENTORNO -->
+      <section id="tab-m1" class="hidden space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div>
+            <h2 class="text-xl md:text-2xl font-bold text-white">1. Diagnóstico General y Entorno</h2>
+            <p class="text-sm md:text-base text-slate-400 mt-1">Caracterización del entorno comercial y evaluación comparativa de la zona</p>
+          </div>
+          <span class="text-sm font-bold text-emerald-400 bg-emerald-500/10 px-3.5 py-1.5 rounded-full border border-emerald-500/20">Calificación: 90 / 100</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+            <span class="text-xs uppercase font-semibold text-slate-400 block mb-1">Índice de Oportunidad</span>
+            <div class="text-3xl font-black text-white">1.35x</div>
+            <p class="text-sm md:text-base text-sky-400 mt-2 font-medium">Sobre indexación respecto a la mediana de CDMX</p>
+          </div>
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+            <span class="text-xs uppercase font-semibold text-slate-400 block mb-1">Percentil de Localización</span>
+            <div class="text-3xl font-black text-white">Top 18%</div>
+            <p class="text-sm md:text-base text-emerald-400 mt-2 font-medium">Entre las AGEBs con mayor potencial en Cuauhtémoc</p>
+          </div>
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+            <span class="text-xs uppercase font-semibold text-slate-400 block mb-1">Perfil del Entorno</span>
+            <div class="text-xl md:text-2xl font-bold text-white mt-1">Corredor de Servicios Diurnos</div>
+            <p class="text-sm md:text-base text-slate-400 mt-2">Densidad alta de juzgados y oficinas administrativas</p>
+          </div>
+        </div>
+
+        <!-- Gráfico M1: Comparativa de Oportunidad -->
+        <div class="p-5 rounded-2xl bg-slate-900/50 border border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Índice de Oportunidad Relativa (Demanda / Oferta)</span>
+            <span class="text-xs text-emerald-400">+35% sobre la mediana de mercado</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-m1"></canvas>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-sky-950/20 border border-sky-800/40 space-y-3">
+          <div class="text-sky-400 font-bold uppercase text-sm flex items-center gap-2">
+            <i class="fa-solid fa-lightbulb"></i> Recomendación para el Negocio:
+          </div>
+          <p class="text-slate-200 text-sm md:text-base leading-relaxed">
+            La ubicación no requiere destinar presupuesto a campañas publicitarias amplias fuera de la zona. El flujo peatonal natural sobre la banqueta entre el Metro Niños Héroes y las salas de juicios orales asegura una exposición constante y directa con los consumidores potenciales.
+          </p>
+        </div>
+      </section>
+
+      <!-- TAB: 2. PERFIL SOCIODEMOGRÁFICO Y CAPACIDAD DE GASTO -->
+      <section id="tab-m2" class="hidden space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div>
+            <h2 class="text-xl md:text-2xl font-bold text-white">2. Perfil Sociodemográfico & Capacidad de Gasto</h2>
+            <p class="text-sm md:text-base text-slate-400 mt-1">Análisis comparativo entre residentes y la demanda laboral de la zona</p>
+          </div>
+          <span class="text-sm font-bold text-emerald-400 bg-emerald-500/10 px-3.5 py-1.5 rounded-full border border-emerald-500/20">Calificación: 85 / 100</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-3">
+            <div class="text-sm font-bold text-slate-200 uppercase tracking-wide">Indicadores Sociodemográficos (INEGI)</div>
+            <div class="flex justify-between text-sm md:text-base border-b border-slate-800 pb-2">
+              <span class="text-slate-400">NSE Residencial del AGEB:</span>
+              <span class="font-bold text-slate-100">C / C- (Medio / Medio-Bajo)</span>
+            </div>
+            <div class="flex justify-between text-sm md:text-base border-b border-slate-800 pb-2">
+              <span class="text-slate-400">Población / Hogares Censados:</span>
+              <span class="font-bold text-slate-100">4,850 habitantes (1,420 hogares)</span>
+            </div>
+            <div class="flex justify-between text-sm md:text-base">
+              <span class="text-slate-400">Demanda potencial en radio 500 m:</span>
+              <span class="font-bold text-emerald-400">$1.4 MDP mensuales en horario laboral</span>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-3">
+            <div class="text-sm font-bold text-slate-200 uppercase tracking-wide">Parámetros de Gasto y Ticket Promedio</div>
+            <div class="flex justify-between text-sm md:text-base border-b border-slate-800 pb-2">
+              <span class="text-slate-400">Rango de ticket viable:</span>
+              <span class="font-bold text-sky-400">$120 – $160 MXN</span>
+            </div>
+            <div class="flex justify-between text-sm md:text-base border-b border-slate-800 pb-2">
+              <span class="text-slate-400">Aceptación de tickets >$250:</span>
+              <span class="font-bold text-rose-400">Baja (< 8% en consumo entre semana)</span>
+            </div>
+            <div class="flex justify-between text-sm md:text-base">
+              <span class="text-slate-400">Presupuesto individual diario comida:</span>
+              <span class="font-bold text-slate-100">$90 a $140 MXN / persona</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráfico M2: Composición del NSE -->
+        <div class="p-5 rounded-2xl bg-slate-900/50 border border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Distribución de Ingreso y Gasto: Residentes vs. Empleo Flotante</span>
+            <span class="text-xs text-sky-400">Perfil Laboral Predominante C+ y B</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-m2"></canvas>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-emerald-950/20 border border-emerald-800/40 space-y-3">
+          <div class="text-emerald-400 font-bold uppercase text-sm flex items-center gap-2">
+            <i class="fa-solid fa-scale-balanced"></i> Correlación entre Demanda Residencial y Flotante:
+          </div>
+          <p class="text-slate-200 text-sm md:text-base leading-relaxed">
+            Aunque los datos censales muestran un nivel socioeconómico medio-bajo para los habitantes locales, la concentración de oficinas públicas incorpora de lunes a viernes a profesionistas y personal judicial con un perfil de gasto <strong>C+ y B</strong>. El menú debe estructurarse mediante <strong>paquetes ejecutivos completos ($119 – $139 MXN incluyendo bebida)</strong>, alineados con el presupuesto cotidiano disponible.
+          </p>
+        </div>
+      </section>
+
+      <!-- TAB: 3. DINÁMICA DE FLUJO Y HORARIOS -->
+      <section id="tab-m3" class="hidden space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div>
+            <h2 class="text-xl md:text-2xl font-bold text-white">3. Dinámica Temporal y Flujo Peatonal</h2>
+            <p class="text-sm md:text-base text-slate-400 mt-1">Concentración horaria, accesibilidad y comportamiento de movilidad</p>
+          </div>
+          <span class="text-sm font-bold text-amber-400 bg-amber-500/10 px-3.5 py-1.5 rounded-full border border-amber-500/20">Calificación: 72 / 100</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+            <span class="text-xs uppercase font-semibold text-slate-400 block mb-1">Composición de Demanda</span>
+            <div class="text-3xl font-black text-amber-400">82% Empleo Flotante</div>
+            <p class="text-sm md:text-base text-slate-400 mt-2">18% demanda de hogares residentes</p>
+          </div>
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+            <span class="text-xs uppercase font-semibold text-slate-400 block mb-1">Franja Horaria Principal</span>
+            <div class="text-3xl font-black text-white">13:00 - 16:30 hrs</div>
+            <p class="text-sm md:text-base text-amber-400 mt-2 font-medium">Representa el 70% de la venta diaria</p>
+          </div>
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+            <span class="text-xs uppercase font-semibold text-slate-400 block mb-1">Movilidad Urbana</span>
+            <div class="text-3xl font-black text-emerald-400">90% Acceso Peatonal</div>
+            <p class="text-sm md:text-base text-rose-400 mt-2 font-medium">Estacionamiento vehicular muy restringido</p>
+          </div>
+        </div>
+
+        <!-- Gráfico M3: Curva Horaria -->
+        <div class="p-5 rounded-2xl bg-slate-900/50 border border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Curva de Flujo y Concentración de Demanda por Horario</span>
+            <span class="text-xs text-amber-400">Pico crítico: 13:00 a 16:30 hrs</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-m3"></canvas>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-amber-950/20 border border-amber-800/40 space-y-3">
+          <div class="text-amber-400 font-bold uppercase text-sm flex items-center gap-2">
+            <i class="fa-solid fa-clock"></i> Recomendación para la Operación:
+          </div>
+          <p class="text-slate-200 text-sm md:text-base leading-relaxed">
+            Mantener servicio en salón por la noche no resulta eficiente debido a la disminución del paso peatonal pasadas las 18:00 hrs. Conviene operar mostrador en turno diurno (11:30 a 18:00 hrs) y, de requerirse, atender solicitudes nocturnas exclusivamente a través de plataformas de entrega a domicilio para amortizar costos fijos.
+          </p>
+        </div>
+      </section>
+
+      <!-- TAB: 4. OFERTA Y COMPETENCIA -->
+      <section id="tab-m4" class="hidden space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div>
+            <h2 class="text-xl md:text-2xl font-bold text-white">4. Oferta & Competencia</h2>
+            <p class="text-sm md:text-base text-slate-400 mt-1">Inventario DENUE de competidores directos y opciones sustitutas inmediatas</p>
+          </div>
+          <span class="text-sm font-bold text-emerald-400 bg-emerald-500/10 px-3.5 py-1.5 rounded-full border border-emerald-500/20">Calificación: 88 / 100</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-sm font-bold text-emerald-400 uppercase tracking-wide">Sushi y Comida Japonesa (Directos)</span>
+              <span class="text-2xl font-black text-white">2 unidades</span>
+            </div>
+            <p class="text-sm md:text-base text-slate-300 leading-relaxed">
+              1 punto semifijo express y 1 restaurante formal a 420 m cuya reputación presenta áreas de oportunidad en tiempos de espera (más de 25 min en horario de comida).
+            </p>
+          </div>
+
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-sm font-bold text-amber-400 uppercase tracking-wide">Fondas y Taquerías (Sustitutos)</span>
+              <span class="text-2xl font-black text-white">47 unidades</span>
+            </div>
+            <p class="text-sm md:text-base text-slate-300 leading-relaxed">
+              Elevada saturación de comida casera económica ($80 a $100 MXN), pero con ausencia de conceptos que ofrezcan opciones ligeras o frescas orientadas a oficina.
+            </p>
+          </div>
+        </div>
+
+        <!-- Gráfico M4: Mix de Oferta -->
+        <div class="p-5 rounded-2xl bg-slate-900/50 border border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Distribución de la Oferta de Alimentos (Buffer 500 m)</span>
+            <span class="text-xs text-emerald-400">Solo 4% de la oferta es comida japonesa</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-m4"></canvas>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-sky-950/20 border border-sky-800/40 space-y-3">
+          <div class="text-sky-400 font-bold uppercase text-sm flex items-center gap-2">
+            <i class="fa-solid fa-bullseye"></i> Oportunidad de Posicionamiento:
+          </div>
+          <p class="text-slate-200 text-sm md:text-base leading-relaxed">
+            Frente a las fondas, el diferenciador debe ser un menú más <strong>ligero y balanceado</strong>. Frente a la competencia directa, la ventaja clave es la <strong>agilidad de despacho</strong>, asegurando entregas en mostrador en menos de 7 minutos.
+          </p>
+        </div>
+      </section>
+
+      <!-- TAB: 5. FINANZAS Y PUNTO DE EQUILIBRIO -->
+      <section id="tab-m5" class="hidden space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div>
+            <h2 class="text-xl md:text-2xl font-bold text-white">5. Finanzas & Punto de Equilibrio</h2>
+            <p class="text-sm md:text-base text-slate-400 mt-1">Proyección de gastos operativos, margen de contribución y nivel de equilibrio</p>
+          </div>
+          <span class="text-sm font-bold text-emerald-400 bg-emerald-500/10 px-3.5 py-1.5 rounded-full border border-emerald-500/20">Calificación: 86 / 100</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
+            <span class="text-xs uppercase font-semibold text-slate-400 block mb-1">Gastos Fijos Mensuales</span>
+            <div class="text-3xl font-black text-rose-400">$45,000 MXN</div>
+            <p class="text-sm md:text-base text-slate-300">Renta estimada ($16k) + Nómina de 2 colaboradores ($22k) + Servicios básicos ($7k).</p>
+          </div>
+
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
+            <span class="text-xs uppercase font-semibold text-slate-400 block mb-1">Meta de Punto de Equilibrio</span>
+            <div class="text-3xl font-black text-amber-400">23 pedidos / día</div>
+            <p class="text-sm md:text-base text-slate-300">Facturación requerida de $75,000 MXN mensuales con ticket de $135 y 60% de margen bruto.</p>
+          </div>
+
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
+            <span class="text-xs uppercase font-semibold text-slate-400 block mb-1">Tasa de Captura Requerida</span>
+            <div class="text-3xl font-black text-emerald-400">< 0.35%</div>
+            <p class="text-sm md:text-base text-slate-300">Sobre un aforo peatonal estimado de ~6,500 personas en la franja de 13:00 a 16:00 hrs.</p>
+          </div>
+        </div>
+
+        <!-- Gráfico M5: Curva de Punto de Equilibrio -->
+        <div class="p-5 rounded-2xl bg-slate-900/50 border border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Curva de Punto de Equilibrio (Ingresos vs. Costos Totales)</span>
+            <span class="text-xs text-amber-400">Cruce de Equilibrio: 23 pedidos diarios ($75k/mes)</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-m5"></canvas>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-emerald-950/20 border border-emerald-800/40 space-y-3">
+          <div class="text-emerald-400 font-bold uppercase text-sm flex items-center gap-2">
+            <i class="fa-solid fa-chart-pie"></i> Diagnóstico Financiero:
+          </div>
+          <p class="text-slate-200 text-sm md:text-base leading-relaxed">
+            El umbral para alcanzar el punto de equilibrio es moderado. Con solo 23 pedidos diarios se cubren los costos fijos, permitiendo que cada venta incremental después de ese nivel genere utilidad operativa neta.
+          </p>
+        </div>
+      </section>
+
+      <!-- TAB: 6. PLAN TÁCTICO DE ACCIÓN & RIESGOS -->
+      <section id="tab-m6" class="hidden space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div>
+            <h2 class="text-xl md:text-2xl font-bold text-white">6. Plan Táctico & Riesgos</h2>
+            <p class="text-sm md:text-base text-slate-400 mt-1">Recomendaciones operativas y medidas de mitigación para la apertura</p>
+          </div>
+          <span class="text-sm font-bold text-sky-400 bg-sky-500/10 px-3.5 py-1.5 rounded-full border border-sky-500/20">Calificación: 84 / 100</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-3">
+            <span class="text-sm font-bold text-emerald-400 uppercase tracking-wide flex items-center gap-2">
+              <i class="fa-solid fa-bolt"></i> 3 Acciones Recomendadas
+            </span>
+            <div class="text-sm md:text-base text-slate-300 space-y-2.5">
+              <p><strong>1. Paquetes para Oficinas los Viernes:</strong> Opciones para grupos de 4 a 6 personas dirigidas a despachos en días de pago o cierre de semana.</p>
+              <p><strong>2. Pedidos Anticipados por Mensajería:</strong> Levantamiento de comandas entre 11:00 y 12:30 hrs para entrega coordinada a las 13:30 hrs.</p>
+              <p><strong>3. Mostrador con Productos Listos:</strong> Vitrina con los rollos y bowls de mayor demanda listos para despachar de inmediato.</p>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-3">
+            <span class="text-sm font-bold text-rose-400 uppercase tracking-wide flex items-center gap-2">
+              <i class="fa-solid fa-shield"></i> 3 Factores de Riesgo y Mitigación
+            </span>
+            <div class="text-sm md:text-base text-slate-300 space-y-2.5">
+              <p><strong>1. Calendario de Recesos Judiciales:</strong> Disminución de afluencia en julio y diciembre. <em>Mitigación:</em> Ampliar cobertura de entrega a colonias aledañas.</p>
+              <p><strong>2. Variación en Costos de Ingredientes:</strong> <em>Mitigación:</em> Estandarizar gramajes y balancear recetas con insumos de costo más predecible.</p>
+              <p><strong>3. Bajo Tránsito Nocturno:</strong> <em>Mitigación:</em> Concentrar horarios presenciales en la tarde y operar con personal compacto.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráfico M6: Matriz de Impacto vs Probabilidad -->
+        <div class="p-5 rounded-2xl bg-slate-900/50 border border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Matriz de Nivel de Riesgo Operativo y Capacidad de Mitigación</span>
+            <span class="text-xs text-sky-400">Riesgos con mitigación superior al 80%</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-m6"></canvas>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+  </div>
+
+  <!-- Scripts: Navegación de Tabs y Render de Charts Dinámicos con Chart.js -->
+  <script>
+    // Configuración global de Chart.js para modo oscuro
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.font.family = 'Inter';
+    Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.06)';
+
+    const chartInstances = {};
+
+    function initCharts() {
+      // 1. Radar Resumen
+      const ctxResumen = document.getElementById('chart-resumen');
+      if (ctxResumen) {
+        chartInstances['resumen'] = new Chart(ctxResumen, {
+          type: 'radar',
+          data: {
+            labels: ['1. Clúster', '2. Capacidad Gasto', '3. Dinámica Flujo', '4. Competencia', '5. Finanzas', '6. Plan Táctico'],
+            datasets: [{
+              label: 'Puntaje Obtenido',
+              data: [90, 85, 72, 88, 86, 84],
+              backgroundColor: 'rgba(56, 189, 248, 0.2)',
+              borderColor: '#38bdf8',
+              pointBackgroundColor: '#38bdf8',
+              borderWidth: 2
+            }, {
+              label: 'Umbral Mínimo Deseable',
+              data: [70, 70, 70, 70, 70, 70],
+              borderColor: 'rgba(148, 163, 184, 0.4)',
+              borderDash: [5, 5],
+              fill: false,
+              pointRadius: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                angleLines: { color: 'rgba(255, 255, 255, 0.08)' },
+                grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                pointLabels: { color: '#cbd5e1', font: { size: 11, weight: '600' } },
+                suggestedMin: 40,
+                suggestedMax: 100
+              }
+            },
+            plugins: { legend: { position: 'top' } }
+          }
+        });
+      }
+
+      // 2. M1: Bar Chart Oportunidad
+      const ctxM1 = document.getElementById('chart-m1');
+      if (ctxM1) {
+        chartInstances['m1'] = new Chart(ctxM1, {
+          type: 'bar',
+          data: {
+            labels: ['Mediana Estatal CDMX', 'Promedio Alcaldía Cuauhtémoc', 'AGEB Evaluada (Niños Héroes)'],
+            datasets: [{
+              label: 'Índice de Oportunidad Comercial',
+              data: [1.00, 1.12, 1.35],
+              backgroundColor: ['#475569', '#0284c7', '#10b981'],
+              borderRadius: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, suggestedMax: 1.6 }
+            }
+          }
+        });
+      }
+
+      // 3. M2: Donut Chart Composición Demanda
+      const ctxM2 = document.getElementById('chart-m2');
+      if (ctxM2) {
+        chartInstances['m2'] = new Chart(ctxM2, {
+          type: 'bar',
+          data: {
+            labels: ['Gasto Diario Residente (Hogar)', 'Presupuesto Almuerzo Litigante / Oficinista', 'Ticket Objetivo Sushi Express'],
+            datasets: [{
+              label: 'Monto Estimado en MXN',
+              data: [65, 135, 130],
+              backgroundColor: ['#64748b', '#38bdf8', '#10b981'],
+              borderRadius: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, suggestedMax: 160 } }
+          }
+        });
+      }
+
+      // 4. M3: Line Chart Flujo por Horas
+      const ctxM3 = document.getElementById('chart-m3');
+      if (ctxM3) {
+        chartInstances['m3'] = new Chart(ctxM3, {
+          type: 'line',
+          data: {
+            labels: ['09:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '20:00'],
+            datasets: [{
+              label: '% del Tráfico / Ventas Diarias',
+              data: [4, 8, 12, 26, 28, 16, 8, 4, 2, 1],
+              borderColor: '#f59e0b',
+              backgroundColor: 'rgba(245, 158, 11, 0.15)',
+              tension: 0.35,
+              fill: true,
+              pointRadius: 4,
+              pointBackgroundColor: '#f59e0b'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+      }
+
+      // 5. M4: Doughnut Chart Competencia
+      const ctxM4 = document.getElementById('chart-m4');
+      if (ctxM4) {
+        chartInstances['m4'] = new Chart(ctxM4, {
+          type: 'doughnut',
+          data: {
+            labels: ['Fondas y Comida Corrida', 'Taquerías y Antojitos', 'Cafeterías y Tortas', 'Sushi / Bowls (Directos)'],
+            datasets: [{
+              data: [26, 15, 6, 2],
+              backgroundColor: ['#f59e0b', '#fb923c', '#64748b', '#10b981'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'right', labels: { color: '#cbd5e1', font: { size: 12 } } }
+            }
+          }
+        });
+      }
+
+      // 6. M5: Punto de Equilibrio (Ingresos vs Costos Totales)
+      const ctxM5 = document.getElementById('chart-m5');
+      if (ctxM5) {
+        chartInstances['m5'] = new Chart(ctxM5, {
+          type: 'line',
+          data: {
+            labels: ['0 ped/día', '10 ped/día', '20 ped/día', '23 ped/día (Equilibrio)', '30 ped/día', '40 ped/día'],
+            datasets: [{
+              label: 'Ingresos Netos Estimados ($/mes)',
+              data: [0, 32400, 64800, 75000, 97200, 129600],
+              borderColor: '#10b981',
+              borderWidth: 2.5,
+              tension: 0.1
+            }, {
+              label: 'Costos Totales (Fijos + Variables Insumos)',
+              data: [45000, 58000, 71000, 75000, 84000, 97000],
+              borderColor: '#f43f5e',
+              borderDash: [5, 5],
+              borderWidth: 2,
+              tension: 0.1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'top' } },
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+      }
+
+      // 7. M6: Bar Chart Riesgos vs Mitigación
+      const ctxM6 = document.getElementById('chart-m6');
+      if (ctxM6) {
+        chartInstances['m6'] = new Chart(ctxM6, {
+          type: 'bar',
+          data: {
+            labels: ['Receso Vacacional Judicial', 'Variación Precios Insumos', 'Disminución Flujo Nocturno'],
+            datasets: [{
+              label: 'Nivel de Exposición al Riesgo',
+              data: [85, 65, 75],
+              backgroundColor: '#f43f5e',
+              borderRadius: 6
+            }, {
+              label: 'Efectividad del Plan de Mitigación',
+              data: [80, 85, 90],
+              backgroundColor: '#38bdf8',
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'top' } },
+            scales: { y: { beginAtZero: true, suggestedMax: 100 } }
+          }
+        });
+      }
+    }
+
+    function switchTab(tabId) {
+      const sections = ['resumen', 'm1', 'm2', 'm3', 'm4', 'm5', 'm6'];
+      sections.forEach(id => {
+        const el = document.getElementById('tab-' + id);
+        const btn = document.getElementById('btn-' + id);
+        if (el) el.classList.add('hidden');
+        if (btn) btn.classList.remove('active');
+      });
+
+      const activeEl = document.getElementById('tab-' + tabId);
+      const activeBtn = document.getElementById('btn-' + tabId);
+      if (activeEl) activeEl.classList.remove('hidden');
+      if (activeBtn) activeBtn.classList.add('active');
+
+      // Re-render / update size de los gráficos al mostrar el contenedor
+      if (chartInstances[tabId]) {
+        chartInstances[tabId].resize();
+      }
+    }
+
+    // Inicializar charts al cargar
+    window.addEventListener('DOMContentLoaded', () => {
+      initCharts();
+    });
+  </script>
+
+</body>
+</html>
